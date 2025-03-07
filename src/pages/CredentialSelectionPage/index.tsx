@@ -25,10 +25,10 @@ const CredentialSelectionPage = () => {
           component: (
             <Box p={2}>
               <AddCredentialForm />
-              <Grid2 container gap={2}>
+              <Grid2 container spacing={2}>
                 {Object.entries(credentialStore.items).map(
                   ([key, { provider }]) => (
-                    <Grid2 key={key} size={3}>
+                    <Grid2 key={key} size={{ xs: 12, md: 6, lg: 3 }}>
                       <Card variant="outlined">
                         <CardActionArea
                           onClick={() => {
