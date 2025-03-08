@@ -1,12 +1,26 @@
-import { Box, Grid2, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Grid2,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import base64 from "base-64";
 import { useEffect, useMemo, useState } from "react";
 import ReactPlayer from "react-player";
+import utf8 from "utf8";
 import { theme } from "../../../../../lib/mui";
 import {
   getChannelsForCategory,
   getLivestream,
 } from "../../../../../lib/xtream/channels";
+import { getLivestreamEpg } from "../../../../../lib/xtream/epg";
 import { TLivestream } from "../../../../../lib/xtream/types";
 import { useCredentialStore } from "../../../../../store/CredentialStore";
 import {
@@ -43,6 +57,25 @@ export const LivestreamsTabContent = ({
       });
     },
     initialData: [],
+  });
+
+  const {
+    isPending: isLivestreamEpgPending,
+    isError: isLivestreamEpgError,
+    data: livestreamEpgData,
+    error: livestreamEpgError,
+  } = useQuery({
+    queryKey: ["livestream-epg", categoryId, selectedLivestream?.stream_id],
+    queryFn: async () => {
+      if (!credentialStore.activeCredential) return;
+
+      if (!selectedLivestream) return;
+
+      return getLivestreamEpg({
+        credential: credentialStore.activeCredential,
+        streamId: selectedLivestream.stream_id,
+      });
+    },
   });
 
   useEffect(() => {
@@ -105,8 +138,8 @@ export const LivestreamsTabContent = ({
       </Grid2>
       <Grid2 size={{ xs: 11, md: 10 }} height="100%" overflow="scroll">
         {selectedLivestream ? (
-          <Box display="flex" flexDirection="column" overflow="scroll">
-            <Box flexGrow={1}>
+          <Box display="flex" flexDirection="column">
+            <Box>
               <ReactPlayer
                 url={playerUrl}
                 controls={true}
@@ -120,12 +153,55 @@ export const LivestreamsTabContent = ({
                 }}
               />
             </Box>
-            <Box
-              sx={{
-                background: theme.palette.background.paper,
-              }}
-            >
-              epg will be here... eventually
+            <Box flexGrow={1}>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <Typography variant="overline">START</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="overline">TITLE</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="overline">DESCRIPTION</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {livestreamEpgData &&
+                    livestreamEpgData.epg_listings.length > 0 ? (
+                      livestreamEpgData?.epg_listings.map((epg) => (
+                        <TableRow key={epg.id}>
+                          <TableCell sx={{ minWidth: 200 }}>
+                            {new Date(epg.start).toLocaleTimeString()} -{" "}
+                            {new Date(epg.end).toLocaleTimeString()}
+                          </TableCell>
+
+                          <TableCell align="right">
+                            {utf8.decode(base64.decode(epg.title))}
+                          </TableCell>
+                          <TableCell align="right">
+                            {utf8.decode(base64.decode(epg.description))}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4} align="center">
+                          <Typography
+                            variant="overline"
+                            fontWeight={theme.typography.fontWeightBold}
+                          >
+                            No EPG data for this livestream.
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Box>
           </Box>
         ) : (

@@ -173,10 +173,11 @@ const MainPage = () => {
               </Grid2>
               <Grid2 height="100%" flexGrow={1} size={12}>
                 {!isNil(selectedCategoryTab) &&
-                  !isNil(selectedSubcategoryTab) && (
+                  !isNil(selectedSubcategoryTab) &&
+                  categoryDataMap[selectedCategoryTab] && (
                     <LivestreamsTabContent
                       categoryId={Number(
-                        categoryDataMap[selectedCategoryTab]![
+                        categoryDataMap[selectedCategoryTab][
                           selectedSubcategoryTab
                         ].category_id
                       )}
