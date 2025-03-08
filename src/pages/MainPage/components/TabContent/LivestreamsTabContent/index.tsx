@@ -59,12 +59,7 @@ export const LivestreamsTabContent = ({
     initialData: [],
   });
 
-  const {
-    isPending: isLivestreamEpgPending,
-    isError: isLivestreamEpgError,
-    data: livestreamEpgData,
-    error: livestreamEpgError,
-  } = useQuery({
+  const { data: livestreamEpgData } = useQuery({
     queryKey: ["livestream-epg", categoryId, selectedLivestream?.stream_id],
     queryFn: async () => {
       if (!credentialStore.activeCredential) return;
