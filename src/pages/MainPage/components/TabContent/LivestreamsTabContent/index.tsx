@@ -107,7 +107,7 @@ export const LivestreamsTabContent = ({
   };
 
   return (
-    <Grid2 container overflow="hidden" height="100%">
+    <Grid2 container height="100%">
       <Grid2
         height="100%"
         size={{ xs: 1, md: 2 }}
@@ -131,16 +131,17 @@ export const LivestreamsTabContent = ({
           />
         </Box>
       </Grid2>
-      <Grid2 size={{ xs: 11, md: 10 }} height="100%" overflow="scroll">
+      <Grid2 size={{ xs: 11, md: 10 }} overflow="scroll" height="100%" pb={12}>
         {selectedLivestream ? (
           <Box display="flex" flexDirection="column">
-            <Box>
+            <Box flex={1}>
               <ReactPlayer
                 url={playerUrl}
                 controls={true}
                 playing={true}
                 width="100%"
-                height="auto"
+                height="100%"
+                style={{ aspectRatio: "16/9" }}
                 config={{
                   file: {
                     forceHLS: true,
@@ -148,9 +149,9 @@ export const LivestreamsTabContent = ({
                 }}
               />
             </Box>
-            <Box flexGrow={1}>
-              <TableContainer>
-                <Table>
+            <Box>
+              <TableContainer sx={{ maxWidth: "100%" }}>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
                       <TableCell>
@@ -173,12 +174,13 @@ export const LivestreamsTabContent = ({
                             {new Date(epg.start).toLocaleTimeString()} -{" "}
                             {new Date(epg.end).toLocaleTimeString()}
                           </TableCell>
-
-                          <TableCell align="right">
+                          <TableCell>
                             {utf8.decode(base64.decode(epg.title))}
                           </TableCell>
-                          <TableCell align="right">
-                            {utf8.decode(base64.decode(epg.description))}
+                          <TableCell>
+                            {epg.description.length > 0
+                              ? utf8.decode(base64.decode(epg.description))
+                              : "-"}
                           </TableCell>
                         </TableRow>
                       ))

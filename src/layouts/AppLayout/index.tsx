@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import { ReactNode } from "react";
 import { Header, THeaderProps } from "../../components/molecules/Header";
-import { Footer } from "../../components/molecules/Footer";
 
 export type TSlot = {
   component: ReactNode;
@@ -22,7 +21,6 @@ const AppLayout = ({ slots }: TAppLayoutProps) => {
         <Box overflow="hidden" flexGrow={1}>
           {slots.main.component}
         </Box>
-        <Footer />
       </Box>
     </Box>
   );
