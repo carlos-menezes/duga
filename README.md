@@ -1,4 +1,4 @@
-<img src="./_repo/banner.png" width="100%" height="auto" />
+<img src="./_repo/banner-final.png" width="100%" height="auto" />
 
 ### **duga (дуга)** is an IPTV client for the web.
 
